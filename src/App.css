@@ -6,6 +6,60 @@
   height: 40vmin;
   pointer-events: none;
 }
+#chessboard {
+  display: grid;
+  place-items: center;
+  border: 10px solid slategray;
+  width: fit-content;
+  margin: auto;
+  border-radius: 8px;
+  user-select: none;
+}
+.column {
+  display: flex;
+}
+.row {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.row .box {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 4px;
+  opacity: 0.3;
+}
+/* .single-square {
+  cursor: grab;
+} */
+.single-square:hover {
+  background: #849cb49e;
+}
+
+.square {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.row img {
+  width: auto;
+  height: 85%;
+}
+
+.dark {
+  background: slategrey;
+  color: white;
+}
+.light {
+  background: #70809047;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
