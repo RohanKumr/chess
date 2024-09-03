@@ -8,6 +8,8 @@ const colAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
 const { ROOK, KNIGHT, BISHOP, QUEEN, KING, PAWN } = PIECES;
 
+// prevent caslting when rook , king has moved once
+
 const initialState = [
   //row 8
   [
@@ -225,7 +227,7 @@ function App() {
     console.log({ prevColIdx, prevRowIdx, movedPiece });
 
     switch(movedPiece.name.toUpperCase()) {
-      //PAWN
+
       case PAWN.NAME:
         if(movedPiece.type == "LIGHT") {
           if(rowIdx == 0) {
@@ -261,15 +263,9 @@ function App() {
         }
         break
 
-      //KNIGHT
       case KNIGHT.NAME:
         if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
-        // if (movedPiece.type == 'LIGHT' && rowIdx == 7 && colIdx == 6 ) {
-        //   console.log(object);
-        // }
-        // if (movedPiece.type == 'DARK' && rowIdx ==  && colIdx == 6 ) {
 
-        // }
         if(prevColIdx == colIdx + 1 && prevRowIdx == rowIdx + 2) console.log('valid move')
         else if(prevColIdx == colIdx - 1 && prevRowIdx == rowIdx + 2) console.log('valid move')
         else if(prevColIdx == colIdx - 2 && rowIdx == prevRowIdx - 1) console.log('valid move')
@@ -285,8 +281,55 @@ function App() {
       case KING.NAME:
 
         if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
-        if(colIdx >= prevColIdx - 1 && colIdx <= prevColIdx + 1 && rowIdx >= prevRowIdx - 1 && rowIdx <= prevRowIdx + 1) console.log('king moves 1');
-        else return
+
+        if(colIdx >= prevColIdx - 1 && colIdx <= prevColIdx + 1 && rowIdx >= prevRowIdx - 1 && rowIdx <= prevRowIdx + 1) console.log('king moves 1')
+        else if(Math.abs(rowIdx - prevRowIdx) === 2 || Math.abs(colIdx - prevColIdx) === 2) {
+          // if(chessboard[0][3] || chessboard[0][5] || chessboard[7][3] || chessboard[7][5]) return
+          console.log('can castle');
+          if(rowIdx === 0 && colIdx == 6) {
+            if(chessboard[0][5]) return
+            return setChessboard(prev => {
+              const newArr = JSON.parse(JSON.stringify(prev));
+              newArr[prevRowIdx][prevColIdx] = '';
+              newArr[rowIdx][colIdx] = movedPiece;
+              newArr[0][5] = prev[0][7]
+              newArr[0][7] = ''
+              return newArr
+            })
+          } else if(rowIdx == 7 && colIdx == 6) {
+            if(chessboard[7][5]) return
+            return setChessboard(prev => {
+              const newArr = JSON.parse(JSON.stringify(prev));
+              newArr[prevRowIdx][prevColIdx] = '';
+              newArr[rowIdx][colIdx] = movedPiece;
+              newArr[7][5] = prev[7][7]
+              newArr[7][7] = ''
+              return newArr
+            })
+          } else if(rowIdx == 7 && colIdx == 2) {
+            if(chessboard[7][2] || chessboard[7][1]) return
+            return setChessboard(prev => {
+              const newArr = JSON.parse(JSON.stringify(prev));
+              newArr[prevRowIdx][prevColIdx] = '';
+              newArr[rowIdx][colIdx] = movedPiece;
+              newArr[7][3] = prev[7][0]
+              newArr[7][0] = ''
+              return newArr
+            })
+          } else if(rowIdx == 0 && colIdx == 2) {
+            if(chessboard[0][2] || chessboard[0][1]) return
+            return setChessboard(prev => {
+              const newArr = JSON.parse(JSON.stringify(prev));
+              newArr[prevRowIdx][prevColIdx] = '';
+              newArr[rowIdx][colIdx] = movedPiece;
+              newArr[0][3] = prev[0][0]
+              newArr[0][0] = ''
+              return newArr
+            })
+          }
+          console.log('beyond castle');
+        } else return
+        break;
 
       case ROOK.NAME:
         if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
@@ -315,7 +358,6 @@ function App() {
         } else if(colIdx == prevColIdx) {
           // columns are same check diff for columns
           console.log('columns equal', rowIdx, prevRowIdx);
-
           if(rowIdx < prevRowIdx) {
             // up | col , row - 1
             console.log("row < prevRow", prevRowIdx, rowIdx);
@@ -421,14 +463,159 @@ function App() {
           return
         }
         break;
+
       case QUEEN.NAME:
         console.log('moved queen');
-        break;
+        // top - pr - diff
+        // bot - pr + diff
+        // left - pc - diff
+        // right - pc + diff
+        if(colIdx == prevColIdx || rowIdx == prevRowIdx) {
+          console.log("go straight");
+          if(colIdx == prevColIdx) {
+            if(prevRowIdx < rowIdx) { //bottom
+              console.log('bottom');
+              let collide = 0;
+              for(let n = prevRowIdx + 1; n <= rowIdx; n++) {
+                if(collide >= 1) return
+                if(chessboard[n][colIdx]) {
+                  if(movedPiece.type == chessboard[n][colIdx].type) return
+                  if(chessboard[n][colIdx].type != movedPiece.type) collide++
+                }
+              }
+            } else {
+              console.log('top');
+              let collide = 0;
+              for(let n = prevRowIdx - 1; n >= rowIdx; n--) {
+                if(collide >= 1) return
+                if(chessboard[n][colIdx]) {
+                  if(movedPiece.type == chessboard[n][colIdx].type) return
+                  if(chessboard[n][colIdx].type != movedPiece.type) collide++
+                }
+              }
+            }
 
+          } else {
+            if(prevColIdx < colIdx) {
+              let collide = 0;
+              for(let n = prevColIdx + 1; n <= colIdx; n++) {
+                if(collide >= 1) return
+                if(chessboard[rowIdx][n]) {
+                  if(movedPiece.type == chessboard[rowIdx][n].type) return
+                  if(chessboard[rowIdx][n].type != movedPiece.type) collide++
+                }
+              }
+            } else {
+              let collide = 0;
+              for(let n = prevColIdx - 1; n >= colIdx; n--) {
+                if(collide >= 1) return
+                if(chessboard[rowIdx][n]) {
+                  if(movedPiece.type == chessboard[rowIdx][n].type) return
+                  if(chessboard[rowIdx][n].type != movedPiece.type) collide++
+                }
+              }
+            }
+          }
+
+
+        } else if(Math.abs(rowIdx - prevRowIdx) == Math.abs(colIdx - prevColIdx)) {
+
+          console.log("go diagonally");
+
+          if(rowIdx < prevRowIdx && colIdx < prevColIdx) {
+            console.log('top - left');
+            let collide = 0;
+
+            for(let n = 1; n <= prevRowIdx - rowIdx; n++) {
+              const r = prevRowIdx - n;
+              const c = prevColIdx - n;
+              console.log(r, c);
+
+              if(collide >= 1) return
+              if(chessboard[r][c]) {
+                if(movedPiece.type == chessboard[r][c].type) return
+                if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+              }
+            }
+          } else if(rowIdx > prevRowIdx && colIdx > prevColIdx) {
+            console.log('bottom - right')
+            let collide = 0;
+
+            for(let n = 1; n <= rowIdx - prevRowIdx; n++) {
+              const r = prevRowIdx + n;
+              const c = prevColIdx + n;
+              console.log(r, c);
+
+              if(collide >= 1) return
+              if(chessboard[r][c]) {
+                if(movedPiece.type == chessboard[r][c].type) return
+                if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+              }
+            }
+
+
+          } else if(rowIdx < prevRowIdx && colIdx > prevColIdx) {
+            console.log('top - right')
+            let collide = 0;
+
+            for(let n = 1; n <= prevRowIdx - rowIdx; n++) {
+              const r = prevRowIdx - n;
+              const c = prevColIdx + n;
+              console.log(r, c);
+
+              if(collide >= 1) return
+              if(chessboard[r][c]) {
+                if(movedPiece.type == chessboard[r][c].type) return
+                if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+              }
+            }
+
+          } else if(rowIdx > prevRowIdx && colIdx < prevColIdx) {
+            console.log('bottom - left')
+            let collide = 0;
+
+            for(let n = 1; n <= rowIdx - prevRowIdx; n++) {
+              const r = prevRowIdx + n;
+              const c = prevColIdx - n;
+              console.log(r, c);
+
+              if(collide >= 1) return
+              if(chessboard[r][c]) {
+                if(movedPiece.type == chessboard[r][c].type) return
+                if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+              }
+            }
+
+          } else {
+            console.log('else ');
+            return
+          }
+
+        } else return;
+
+
+        // Math.abs(rowIdx - prevRowIdx);
+        // Math.abs(colIdx - prevColIdx);
+        // if(rowDiff != colDiff) return;
+
+        //diagonally
+        // top - left     | row - 1 , col - 1
+        // bottom - right | row + 1 , col + 1
+        // top - right    | row - 1 , col + 1
+        // bottom - left  | row + 1 , col - 1
+
+        break;
 
       default:
         break;
     }
+
+    const sound = {
+      move: 'https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/default/move-self.mp3'
+    };
+
+    const audio = new Audio(sound.move);
+    audio.play();
 
     setChessboard(prev => {
       const newArr = [...prev];
@@ -466,24 +653,21 @@ function App() {
     <div className="App">
       <h1>Chessboard</h1>
       <div id="chessboard">
-        { chessboard.map((row, rowIdx) => <div key={ 'row' + rowIdx } className="column">
+        { chessboard.map((row, rowIdx) => <div key={ 'row' + rowIdx } className="row">
           { row.map((col, colIdx) => <React.Fragment
             key={ 'col' + colIdx }
           >
             <div
-              className={ `row single-square ${getBoxColor(colIdx, rowIdx)}` }
+              className={ `column single-square ${getBoxColor(colIdx, rowIdx)}` }
               onDrop={ (e) => onDrop(e, colIdx, rowIdx, col) }
               onDragOver={ (e) => onDragOver(e, colIdx, rowIdx, col) }
               draggable={ chessboard[rowIdx][colIdx] }
               onDragStart={ (e) => onDrag(e, colIdx, rowIdx, col) }
             >
               <div className='box' >{ rowIdx }{ colIdx } { 8 - rowIdx }{ colAlphabets[colIdx] }</div>
-              <div
-                className='square'
 
-              >
-                { col.img && <img src={ `${col.img}` } alt={ col.name } /> }
-              </div >
+              { col.img && <img src={ `${col.img}` } alt={ col.name } /> }
+
             </div >
           </React.Fragment>) }
         </div>)
