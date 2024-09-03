@@ -200,6 +200,7 @@ function App() {
 
   const [chessboard, setChessboard] = useState(initialState)
   const [path, setPath] = useState(null)
+  const [whoMoves, setWhoMoves] = useState('LIGHT')
 
   const getBoxColor = (colIdx, rowIdx) => {
     const isEven = (n) => n % 2 == 0;
@@ -208,6 +209,9 @@ function App() {
   }
 
   const onDrag = (e, colIdx, rowIdx, item) => {
+
+    console.log(chessboard[rowIdx][colIdx].type);
+    // if(chessboard[rowIdx][colIdx].type != whoMoves) return
     console.log('dragging');
     console.log(colIdx, rowIdx, item);
     e.dataTransfer.setData("movedPiece", JSON.stringify(item))
@@ -217,10 +221,11 @@ function App() {
 
   const onDrop = (e, colIdx, rowIdx, item) => {
     // console.log(colIdx, rowIdx, item);
-
     const movedPiece = JSON.parse(e.dataTransfer.getData("movedPiece"));
     const prevColIdx = +e.dataTransfer.getData("prevColIdx");
     const prevRowIdx = +e.dataTransfer.getData("prevRowIdx");
+
+    if(chessboard[prevRowIdx][prevColIdx].type != whoMoves) return
 
     console.log('dropped', movedPiece.name);
     console.log({ colIdx, rowIdx });
@@ -617,6 +622,9 @@ function App() {
     const audio = new Audio(sound.move);
     audio.play();
 
+    if(chessboard[prevRowIdx][prevColIdx].type == 'LIGHT') setWhoMoves('DARK')
+    if(chessboard[prevRowIdx][prevColIdx].type == 'DARK') setWhoMoves('LIGHT')
+
     setChessboard(prev => {
       const newArr = [...prev];
       newArr[prevRowIdx][prevColIdx] = '';
@@ -647,11 +655,9 @@ function App() {
     if(king == 1) alert(`${winner} wins!`)
   }, [chessboard])
 
-
-
   return (
     <div className="App">
-      <h1>Chessboard</h1>
+      <h1>{ whoMoves == "LIGHT" ? "White" : "Black" } { "'s Turn" }</h1>
       <div id="chessboard">
         { chessboard.map((row, rowIdx) => <div key={ 'row' + rowIdx } className="row">
           { row.map((col, colIdx) => <React.Fragment
