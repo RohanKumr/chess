@@ -293,6 +293,7 @@ function App() {
           console.log('can castle');
           if(rowIdx === 0 && colIdx == 6) {
             if(chessboard[0][5]) return
+            changeTurns();
             return setChessboard(prev => {
               const newArr = JSON.parse(JSON.stringify(prev));
               newArr[prevRowIdx][prevColIdx] = '';
@@ -303,6 +304,7 @@ function App() {
             })
           } else if(rowIdx == 7 && colIdx == 6) {
             if(chessboard[7][5]) return
+            changeTurns();
             return setChessboard(prev => {
               const newArr = JSON.parse(JSON.stringify(prev));
               newArr[prevRowIdx][prevColIdx] = '';
@@ -313,6 +315,7 @@ function App() {
             })
           } else if(rowIdx == 7 && colIdx == 2) {
             if(chessboard[7][2] || chessboard[7][1]) return
+            changeTurns();
             return setChessboard(prev => {
               const newArr = JSON.parse(JSON.stringify(prev));
               newArr[prevRowIdx][prevColIdx] = '';
@@ -323,6 +326,7 @@ function App() {
             })
           } else if(rowIdx == 0 && colIdx == 2) {
             if(chessboard[0][2] || chessboard[0][1]) return
+            changeTurns();
             return setChessboard(prev => {
               const newArr = JSON.parse(JSON.stringify(prev));
               newArr[prevRowIdx][prevColIdx] = '';
@@ -622,8 +626,12 @@ function App() {
     const audio = new Audio(sound.move);
     audio.play();
 
-    if(chessboard[prevRowIdx][prevColIdx].type == 'LIGHT') setWhoMoves('DARK')
-    if(chessboard[prevRowIdx][prevColIdx].type == 'DARK') setWhoMoves('LIGHT')
+    function changeTurns() {
+      if(chessboard[prevRowIdx][prevColIdx].type == 'LIGHT') setWhoMoves('DARK')
+      if(chessboard[prevRowIdx][prevColIdx].type == 'DARK') setWhoMoves('LIGHT')
+    };
+
+    changeTurns();
 
     setChessboard(prev => {
       const newArr = [...prev];
