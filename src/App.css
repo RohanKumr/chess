@@ -22,8 +22,10 @@ body {
   display: flex;
 }
 .row {
-  width: 100px;
-  height: 100px;
+  width: 12vw;
+  height: 12vw;
+  max-width: 100px;
+  max-height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,6 +38,7 @@ body {
   bottom: 0;
   padding: 4px;
   opacity: 0.3;
+  font-size: clamp(0.5rem, -0.125rem + 2vw, 1rem);
 }
 /* .single-square {
   cursor: grab;
@@ -52,7 +55,7 @@ body {
 }
 
 .row img {
-  width: auto;
+  width: 85%;
   height: 85%;
 }
 

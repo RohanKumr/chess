@@ -224,7 +224,6 @@ function App() {
     console.log({ colIdx, rowIdx });
     console.log({ prevColIdx, prevRowIdx, movedPiece });
 
-
     switch(movedPiece.name.toUpperCase()) {
       //PAWN
       case PAWN.NAME:
@@ -265,6 +264,12 @@ function App() {
       //KNIGHT
       case KNIGHT.NAME:
         if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
+        // if (movedPiece.type == 'LIGHT' && rowIdx == 7 && colIdx == 6 ) {
+        //   console.log(object);
+        // }
+        // if (movedPiece.type == 'DARK' && rowIdx ==  && colIdx == 6 ) {
+
+        // }
         if(prevColIdx == colIdx + 1 && prevRowIdx == rowIdx + 2) console.log('valid move')
         else if(prevColIdx == colIdx - 1 && prevRowIdx == rowIdx + 2) console.log('valid move')
         else if(prevColIdx == colIdx - 2 && rowIdx == prevRowIdx - 1) console.log('valid move')
@@ -341,7 +346,7 @@ function App() {
         // top - right    | row - 1 , col + 1
         // bottom - left  | row + 1 , col - 1
 
-        // Checking if we moving diagonally.
+        // Checking if we are moving diagonally.
         const rowDiff = Math.abs(rowIdx - prevRowIdx);
         const colDiff = Math.abs(colIdx - prevColIdx);
         if(rowDiff != colDiff) return;
@@ -439,9 +444,21 @@ function App() {
     // console.log(colIdx, rowIdx, item);
   }
 
-  // useEffect(() => {
-  //   // if () {}
-  // }, [chessboard])
+  useEffect(() => {
+    let king = 0;
+    let winner;
+
+    chessboard.forEach((row, r) => {
+      row.forEach((piece, c) => {
+        if(piece?.name?.toUpperCase() == KING.NAME) {
+          king++
+          winner = piece.type;
+        }
+      })
+    })
+
+    if(king == 1) alert(`${winner} wins!`)
+  }, [chessboard])
 
 
 
