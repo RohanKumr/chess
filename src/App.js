@@ -264,7 +264,6 @@ function App() {
       //KNIGHT
       case KNIGHT.NAME:
         if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
-
         // if (movedPiece.type == 'LIGHT' && rowIdx == 7 && colIdx == 6 ) {
         //   console.log(object);
         // }
