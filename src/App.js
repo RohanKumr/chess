@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 import { PIECES } from './utils/helper';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const colAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
@@ -275,13 +275,150 @@ function App() {
         else if(colIdx == prevColIdx + 1 && rowIdx == prevRowIdx + 2) console.log('valid move')
         else if(colIdx == prevColIdx - 1 && rowIdx == prevRowIdx + 2) console.log('valid move')
         else return
+        break;
 
       case KING.NAME:
-        console.log(colIdx >= prevColIdx - 1, colIdx <= prevColIdx + 1);
-        console.log(rowIdx >= prevRowIdx - 1 && rowIdx <= prevRowIdx + 1);
+
         if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
         if(colIdx >= prevColIdx - 1 && colIdx <= prevColIdx + 1 && rowIdx >= prevRowIdx - 1 && rowIdx <= prevRowIdx + 1) console.log('king moves 1');
         else return
+
+      case ROOK.NAME:
+        if(movedPiece.type == chessboard[rowIdx][colIdx].type) return
+        // only allow straight lines else invalid
+        if(rowIdx == prevRowIdx) {
+          // rows are same check diff for columns
+          console.log('rows equal', colIdx, prevColIdx);
+          if(colIdx < prevColIdx) {
+            // left | row , col - 1
+            let collide = 0;
+            for(let index = prevColIdx - 1; index >= colIdx; index--) {
+              if(collide >= 1) return
+              if(movedPiece.type == chessboard[rowIdx][index].type) return
+              if(chessboard[rowIdx][index].type && chessboard[rowIdx][index].type != movedPiece.type) collide++
+            }
+          } else {
+            // right | row, col + 1
+            console.log("col > prevColIdx");
+            let collide = 0;
+            for(let index = prevColIdx + 1; index <= colIdx; index++) {
+              if(collide >= 1) return
+              if(movedPiece.type == chessboard[rowIdx][index].type) return
+              if(chessboard[rowIdx][index].type && chessboard[rowIdx][index].type != movedPiece.type) collide++
+            }
+          }
+        } else if(colIdx == prevColIdx) {
+          // columns are same check diff for columns
+          console.log('columns equal', rowIdx, prevRowIdx);
+
+          if(rowIdx < prevRowIdx) {
+            // up | col , row - 1
+            console.log("row < prevRow", prevRowIdx, rowIdx);
+            let collide = 0;
+            for(let index = prevRowIdx - 1; index >= rowIdx; index--) {
+              console.log(index, colIdx);
+              if(collide >= 1) return
+              if(movedPiece.type == chessboard[index][colIdx].type) return
+              if(chessboard[index][colIdx].type && chessboard[index][colIdx].type != movedPiece.type) collide++
+            }
+          } else {
+            //down | col, row + 1
+            console.log('row > prevRow');
+            let collide = 0;
+            for(let index = prevRowIdx + 1; index <= rowIdx; index++) {
+              console.log(index, collide, chessboard[index][colIdx].type);
+              if(collide >= 1) return
+              if(movedPiece.type == chessboard[index][colIdx].type) return
+              if(chessboard[index][colIdx].type && chessboard[index][colIdx].type != movedPiece.type) collide++
+            }
+          }
+        } else return
+        break
+
+      case BISHOP.NAME:
+        // top - left     | row - 1 , col - 1
+        // bottom - right | row + 1 , col + 1
+        // top - right    | row - 1 , col + 1
+        // bottom - left  | row + 1 , col - 1
+
+        // Checking if we moving diagonally.
+        const rowDiff = Math.abs(rowIdx - prevRowIdx);
+        const colDiff = Math.abs(colIdx - prevColIdx);
+        if(rowDiff != colDiff) return;
+
+        if(rowIdx < prevRowIdx && colIdx < prevColIdx) {
+          console.log('top - left');
+          let collide = 0;
+
+          for(let n = 1; n <= prevRowIdx - rowIdx; n++) {
+            const r = prevRowIdx - n;
+            const c = prevColIdx - n;
+            console.log(r, c);
+
+            if(collide >= 1) return
+            if(chessboard[r][c]) {
+              if(movedPiece.type == chessboard[r][c].type) return
+              if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+            }
+          }
+        } else if(rowIdx > prevRowIdx && colIdx > prevColIdx) {
+          console.log('bottom - right')
+          let collide = 0;
+
+
+          for(let n = 1; n <= rowIdx - prevRowIdx; n++) {
+            const r = prevRowIdx + n;
+            const c = prevColIdx + n;
+            console.log(r, c);
+
+            if(collide >= 1) return
+            if(chessboard[r][c]) {
+              if(movedPiece.type == chessboard[r][c].type) return
+              if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+            }
+          }
+
+
+        } else if(rowIdx < prevRowIdx && colIdx > prevColIdx) {
+          console.log('top - right')
+          let collide = 0;
+
+          for(let n = 1; n <= prevRowIdx - rowIdx; n++) {
+            const r = prevRowIdx - n;
+            const c = prevColIdx + n;
+            console.log(r, c);
+
+            if(collide >= 1) return
+            if(chessboard[r][c]) {
+              if(movedPiece.type == chessboard[r][c].type) return
+              if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+            }
+          }
+
+        } else if(rowIdx > prevRowIdx && colIdx < prevColIdx) {
+          console.log('bottom - left')
+          let collide = 0;
+
+          for(let n = 1; n <= rowIdx - prevRowIdx; n++) {
+            const r = prevRowIdx + n;
+            const c = prevColIdx - n;
+            console.log(r, c);
+
+            if(collide >= 1) return
+            if(chessboard[r][c]) {
+              if(movedPiece.type == chessboard[r][c].type) return
+              if(chessboard[r][c].type && chessboard[r][c].type != movedPiece.type) collide++
+            }
+          }
+
+        } else {
+          console.log('else ');
+          return
+        }
+        break;
+      case QUEEN.NAME:
+        console.log('moved queen');
+        break;
 
 
       default:
@@ -302,6 +439,9 @@ function App() {
     // console.log(colIdx, rowIdx, item);
   }
 
+  // useEffect(() => {
+  //   // if () {}
+  // }, [chessboard])
 
 
 
@@ -309,8 +449,10 @@ function App() {
     <div className="App">
       <h1>Chessboard</h1>
       <div id="chessboard">
-        { chessboard.map((row, rowIdx) => <div className="column">
-          { row.map((col, colIdx) => <>
+        { chessboard.map((row, rowIdx) => <div key={ 'row' + rowIdx } className="column">
+          { row.map((col, colIdx) => <React.Fragment
+            key={ 'col' + colIdx }
+          >
             <div
               className={ `row single-square ${getBoxColor(colIdx, rowIdx)}` }
               onDrop={ (e) => onDrop(e, colIdx, rowIdx, col) }
@@ -318,7 +460,7 @@ function App() {
               draggable={ chessboard[rowIdx][colIdx] }
               onDragStart={ (e) => onDrag(e, colIdx, rowIdx, col) }
             >
-              <div className='box' >{ 8 - rowIdx }{ colAlphabets[colIdx] }</div>
+              <div className='box' >{ rowIdx }{ colIdx } { 8 - rowIdx }{ colAlphabets[colIdx] }</div>
               <div
                 className='square'
 
@@ -326,7 +468,7 @@ function App() {
                 { col.img && <img src={ `${col.img}` } alt={ col.name } /> }
               </div >
             </div >
-          </>) }
+          </React.Fragment>) }
         </div>)
         }
       </div >
