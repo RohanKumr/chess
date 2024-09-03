@@ -678,7 +678,9 @@ function App() {
               draggable={ chessboard[rowIdx][colIdx] }
               onDragStart={ (e) => onDrag(e, colIdx, rowIdx, col) }
             >
-              <div className='box' >{ rowIdx }{ colIdx } { 8 - rowIdx }{ colAlphabets[colIdx] }</div>
+              <div className='box' >
+                {/* { rowIdx }{ colIdx }  */ }
+                { 8 - rowIdx }{ colAlphabets[colIdx] }</div>
 
               { col.img && <img src={ `${col.img}` } alt={ col.name } /> }
 
