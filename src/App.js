@@ -619,12 +619,12 @@ function App() {
         break;
     }
 
-    const sound = {
-      move: 'https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/default/move-self.mp3'
-    };
+    // const sound = {
+    //   move: 'url'
+    // };
 
-    const audio = new Audio(sound.move);
-    audio.play();
+    // const audio = new Audio(sound.move);
+    // audio.play();
 
     function changeTurns() {
       if(chessboard[prevRowIdx][prevColIdx].type == 'LIGHT') setWhoMoves('DARK')
