@@ -3,6 +3,7 @@ import './App.css';
 import { useState } from 'react';
 import { PIECES } from './utils/helper';
 import React, { useEffect } from 'react';
+import clickSound from './sound-effects/click-sound.mp3';
 
 const colAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
@@ -619,12 +620,12 @@ function App() {
         break;
     }
 
-    // const sound = {
-    //   move: 'url'
-    // };
+    const sound = {
+      move: clickSound
+    };
 
-    // const audio = new Audio(sound.move);
-    // audio.play();
+    const audio = new Audio(sound.move);
+    audio?.play();
 
     function changeTurns() {
       if(chessboard[prevRowIdx][prevColIdx].type == 'LIGHT') setWhoMoves('DARK')

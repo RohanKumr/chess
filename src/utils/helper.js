@@ -1,32 +1,45 @@
+import ROOK_BLACK from '../images/rook-black.png'
+import ROOK_WHITE from '../images/rook-white.png'
+import KNIGHT_BLACK from '../images/knight-black.png'
+import KNIGHT_WHITE from '../images/knight-white.png'
+import BISHOP_BLACK from '../images//bishop-black.png'
+import BISHOP_WHITE from '../images/bishop-white.png'
+import QUEEN_BLACK from '../images/queen-black.png'
+import QUEEN_WHITE from '../images/queen-white.png'
+import KING_BLACK from '../images/king-black.png'
+import KING_WHITE from '../images/king-white.png'
+import PAWN_BLACK from '../images/pawn-black.png'
+import PAWN_WHITE from '../images/pawn-white.png'
+
 export const PIECES = {
   ROOK: {
-    IMG_DARK: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Chess_rdt60.png',
-    IMG_LIGHT: 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Chess_rlt60.png',
+    IMG_DARK: ROOK_BLACK,
+    IMG_LIGHT: ROOK_WHITE,
     NAME: 'ROOK'
   },
   KNIGHT: {
-    IMG_DARK: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Chess_ndt60.png',
-    IMG_LIGHT: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Chess_nlt60.png',
+    IMG_DARK: KNIGHT_BLACK,
+    IMG_LIGHT: KNIGHT_WHITE,
     NAME: 'KNIGHT'
   },
   BISHOP: {
-    IMG_DARK: 'https://upload.wikimedia.org/wikipedia/commons/8/81/Chess_bdt60.png',
-    IMG_LIGHT: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/Chess_blt60.png',
+    IMG_DARK: BISHOP_BLACK,
+    IMG_LIGHT: BISHOP_WHITE,
     NAME: 'BISHOP'
   },
   QUEEN: {
-    IMG_DARK: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Chess_qdt60.png',
-    IMG_LIGHT: 'https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt60.png',
+    IMG_DARK: QUEEN_BLACK,
+    IMG_LIGHT: QUEEN_WHITE,
     NAME: 'QUEEN'
   },
   KING: {
-    IMG_DARK: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Chess_kdt60.png',
-    IMG_LIGHT: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt60.png',
+    IMG_DARK: KING_BLACK,
+    IMG_LIGHT: KING_WHITE,
     NAME: 'KING'
   },
   PAWN: {
-    IMG_DARK: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Chess_pdt60.png',
-    IMG_LIGHT: 'https://upload.wikimedia.org/wikipedia/commons/0/04/Chess_plt60.png',
+    IMG_DARK: PAWN_BLACK,
+    IMG_LIGHT: PAWN_WHITE,
     NAME: 'PAWN'
   },
 }
