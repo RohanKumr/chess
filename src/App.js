@@ -697,13 +697,34 @@ function App() {
           if(r == 6) moves.push(`${r - 2}${c}`)
           if(chessboard[r - 1][c - 1]) moves.push(`${r - 1}${c - 1}`)
           if(chessboard[r - 1][c + 1]) moves.push(`${r - 1}${c + 1}`)
-          moves.push(`${r - 1}${c}`)
+          if(!chessboard[r - 1][c]) moves.push(`${r - 1}${c}`)
         } else {
           if(r == 1) moves.push(`${r + 2}${c}`)
           if(chessboard[r + 1][c - 1]) moves.push(`${r + 1}${c - 1}`)
           if(chessboard[r + 1][c + 1]) moves.push(`${r + 1}${c + 1}`)
           moves.push(`${r + 1}${c}`)
         }
+        break;
+      case KING.NAME:
+
+        // diagonals
+        moves.push(`${r - 1}${c - 1}`)
+        moves.push(`${r + 1}${c - 1}`)
+        moves.push(`${r - 1}${c + 1}`)
+        moves.push(`${r + 1}${c + 1}`)
+
+        //straights
+        moves.push(`${r + 1}${c}`)
+        moves.push(`${r - 1}${c}`)
+        moves.push(`${r}${c + 1}`)
+        moves.push(`${r}${c - 1}`)
+
+        moves = moves.map((move, i) => {
+          if(chessboard?.[move[0]]?.[move[1]]?.type !== p.type || !chessboard?.[move[0]]?.[move[1]]) return move;
+          else return null
+        })
+        console.log(moves);
+
         break;
 
       default:
@@ -737,7 +758,8 @@ function App() {
             >
               <div className='box' >
                 { rowIdx }{ colIdx }
-                {/* { 8 - rowIdx }{ colAlphabets[colIdx] } */ }
+                {/* { colIdx == 0 && `${8 - rowIdx}` } */ }
+                {/* { rowIdx == 7 && `${colAlphabets[colIdx]}` } */ }
               </div>
 
               { col?.img && <img src={ `${col.img}` } alt={ col.name } /> }
@@ -747,6 +769,10 @@ function App() {
         </div>)
         }
       </div >
+      <p> 	&lt;/&gt; by Rohan</p>
+      <p>*All images used on this site are the property of their respective owners.
+
+      </p>
     </div >
   );
 }
