@@ -200,7 +200,7 @@ function App() {
   // const row = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
   const [chessboard, setChessboard] = useState(initialState)
-  const [path, setPath] = useState(null)
+  const [path, setPath] = useState([]) //00, 11, 20
   const [whoMoves, setWhoMoves] = useState('LIGHT')
 
   const getBoxColor = (colIdx, rowIdx) => {
@@ -225,6 +225,7 @@ function App() {
     const movedPiece = JSON.parse(e.dataTransfer.getData("movedPiece"));
     const prevColIdx = +e.dataTransfer.getData("prevColIdx");
     const prevRowIdx = +e.dataTransfer.getData("prevRowIdx");
+    setPath([])
 
     if(chessboard[prevRowIdx][prevColIdx].type != whoMoves) return
 
@@ -644,9 +645,23 @@ function App() {
 
   const onDragOver = (e, colIdx, rowIdx, item) => {
     e.preventDefault();
+
+    // const p = JSON.parse(e.dataTransfer.getData("movedPiece"));
+    // const c = +e.dataTransfer.getData("prevColIdx");
+    // const r = +e.dataTransfer.getData("prevRowIdx");
+
+
+
+
+
+    // let x = e.pageX;
+    // let y = e.pageY;
+    // console.log(x, y);
+
     // console.log('drag over');
     // console.log(colIdx, rowIdx, item);
   }
+
 
   useEffect(() => {
     let king = 0;
@@ -664,26 +679,68 @@ function App() {
     if(king == 1) alert(`${winner} wins!`)
   }, [chessboard])
 
+
+
+  function fetchPath(r, c, p) {
+    console.log('get path');
+    console.log(r, c, p);
+
+    if(whoMoves !== p.type) {
+      setPath([])
+      return
+    };
+    let moves = []
+
+    switch(p.name.toUpperCase()) {
+      case PAWN.NAME:
+        if(p.type == "LIGHT") {
+          if(r == 6) moves.push(`${r - 2}${c}`)
+          if(chessboard[r - 1][c - 1]) moves.push(`${r - 1}${c - 1}`)
+          if(chessboard[r - 1][c + 1]) moves.push(`${r - 1}${c + 1}`)
+          moves.push(`${r - 1}${c}`)
+        } else {
+          if(r == 1) moves.push(`${r + 2}${c}`)
+          if(chessboard[r + 1][c - 1]) moves.push(`${r + 1}${c - 1}`)
+          if(chessboard[r + 1][c + 1]) moves.push(`${r + 1}${c + 1}`)
+          moves.push(`${r + 1}${c}`)
+        }
+        break;
+
+      default:
+        moves = [];
+        break;
+    }
+
+
+
+    setPath(moves);
+  }
+
+
   return (
     <div className="App">
       <h1>{ whoMoves == "LIGHT" ? "White" : "Black" } { "'s Turn" }</h1>
       <div id="chessboard">
         { chessboard.map((row, rowIdx) => <div key={ 'row' + rowIdx } className="row">
           { row.map((col, colIdx) => <React.Fragment
-            key={ 'col' + colIdx }
+            key={ 'col' + colIdx
+
+            }
           >
             <div
-              className={ `column single-square ${getBoxColor(colIdx, rowIdx)}` }
+              className={ `column single-square  ${getBoxColor(colIdx, rowIdx)} ${path.includes(rowIdx + '' + colIdx) && "path"} ` }
               onDrop={ (e) => onDrop(e, colIdx, rowIdx, col) }
               onDragOver={ (e) => onDragOver(e, colIdx, rowIdx, col) }
               draggable={ chessboard[rowIdx][colIdx] }
               onDragStart={ (e) => onDrag(e, colIdx, rowIdx, col) }
+              onClick={ () => fetchPath(rowIdx, colIdx, col) }
             >
               <div className='box' >
-                {/* { rowIdx }{ colIdx }  */ }
-                { 8 - rowIdx }{ colAlphabets[colIdx] }</div>
+                { rowIdx }{ colIdx }
+                {/* { 8 - rowIdx }{ colAlphabets[colIdx] } */ }
+              </div>
 
-              { col.img && <img src={ `${col.img}` } alt={ col.name } /> }
+              { col?.img && <img src={ `${col.img}` } alt={ col.name } /> }
 
             </div >
           </React.Fragment>) }
